@@ -25,18 +25,13 @@ We build and test eEVM on Linux and Windows on x86-64, but it should be function
 
 ### Linux
 
-Build the static library and tests.
+Build the static library and run the tests.
 
 ```bash
-mkdir build; cd build
-cmake -GNinja ..
-ninja
-```
-
-Run the tests.
-
-```bash
+mkdir build
 cd build
+cmake ..
+make
 ctest -VV
 ```
 
