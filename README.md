@@ -40,7 +40,8 @@ ctest -VV
 Open the Visual Studio 2017 developer command prompt. Create .sln and .vcxproj files and build the static library and tests as follows.
 
 ```cmd
-mkdir build; cd build
+mkdir build
+cd build
 cmake -DBoost_INCLUDE_DIR=<boost directory> ..
 msbuild ALL_BUILD.vcxproj
 ```
