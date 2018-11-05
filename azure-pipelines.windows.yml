@@ -4,7 +4,6 @@ pool:
 steps:
 # Get Boost
 - powershell: |
-    Set-PSDebug -Trace 1
     $src = "https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.zip"
     $src_name = [System.IO.Path]::GetFileName($src)
     $cwd = Convert-Path "."
@@ -18,21 +17,21 @@ steps:
     $unzip_dest = Join-Path $tmp_dir $file_name_no_ext
     Expand-Archive $dest_file -DestinationPath $unzip_dest
 
-- powershell: 'mkdir build'
+- script: 'mkdir build'
   displayName: Make build dir
 
-- powershell: 'cmake -DBOOST_ROOT=../tmp/boost_1_67_0  ..'
+- script: 'cmake -DBOOST_ROOT=../tmp/boost_1_67_0  ..'
   displayName: CMake
   workingDirectory: build
 
-- powershell: 'msbuild ALL_BUILD.vcxproj'
+- script: 'msbuild ALL_BUILD.vcxproj'
   displayName: MSBuild
   workingDirectory: build
 
-- powershell: 'ctest -C debug'
+- script: 'ctest -C debug'
   displayName: Quick test
   workingDirectory: build
 
-- powershell: 'time TEST_DIR=../3rdparty/test_cases/ ./evm_tests -ns -d'
+- script: 'time TEST_DIR=../3rdparty/test_cases/ ./evm_tests -ns -d'
   displayName: Full tests
   workingDirectory: build
