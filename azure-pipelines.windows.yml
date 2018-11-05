@@ -2,40 +2,36 @@ pool:
   vmImage: 'vs2017-win2016'
 
 steps:
-- script: 'choco install 7zip'
-  displayName: Install 7zip
-
 # Get Boost
 - powershell: |
     Set-PSDebug -Trace 1
     $src = "https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.zip"
     $src_name = [System.IO.Path]::GetFileName($src)
     $cwd = Convert-Path "."
-    $dest_dir = Join-Path $cwd "tmp"
-    mkdir $dest_dir
-    $dest_file = Join-Path $dest_dir $src_name
+    $tmp_dir = Join-Path $cwd "tmp"
+    mkdir $tmp_dir
+    $dest_file = Join-Path $tmp_dir $src_name
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $wc = New-Object System.Net.WebClient
     $wc.DownloadFile($src, $dest_file)
     $file_name_no_ext = [System.IO.Path]::GetFileNameWithoutExtension($src_name)
-    $unzip_dest = Join-Path $dest_dir $file_name_no_ext
+    $unzip_dest = Join-Path $tmp_dir $file_name_no_ext
     Expand-Archive $dest_file -DestinationPath $unzip_dest
+
+- script: 'ls; ls tmp; ls tmp/boost_1_67_0'
+  displayName: Debug
 
 - script: 'mkdir build'
   displayName: Make build dir
 
-- script: 'cmake -DBoost_INCLUDE_DIR=..\..\tmp\boost_1_67_0\boost_1_67_0  ..'
+- script: 'cd build; cmake -DBoost_INCLUDE_DIR=../tmp/boost_1_67_0/boost_1_67_0  ..'
   displayName: CMake
-  workingDirectory: build
 
-- script: 'msbuild ALL_BUILD.vcxproj'
+- script: 'cd build; msbuild ALL_BUILD.vcxproj'
   displayName: MSBuild
-  workingDirectory: build
 
-- script: 'ctest -C debug'
+- script: 'cd build; ctest -C debug'
   displayName: Quick test
-  workingDirectory: build
 
-- script: 'time TEST_DIR=../3rdparty/test_cases/ ./evm_tests -ns -d'
+- script: 'cd build; time TEST_DIR=../3rdparty/test_cases/ ./evm_tests -ns -d'
   displayName: Full tests
-  workingDirectory: build
