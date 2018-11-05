@@ -2,8 +2,12 @@ pool:
   vmImage: 'vs2017-win2016'
 
 steps:
+- script: 'choco install 7zip'
+  displayName: Install 7zip
+
 # Get Boost
 - powershell: |
+    Set-PSDebug -Trace 1
     $src = "https://dl.bintray.com/boostorg/release/1.67.0/source/boost_1_67_0.zip"
     $src_name = [System.IO.Path]::GetFileName($src)
     $cwd = Convert-Path "."
@@ -20,7 +24,7 @@ steps:
 - script: 'mkdir build'
   displayName: Make build dir
 
-- script: 'cmake -DBoost_INCLUDE_DIR=..\..\tmp\boost_1_67_0\ ..'
+- script: 'cmake -DBoost_INCLUDE_DIR=..\..\tmp\boost_1_67_0\boost_1_67_0  ..'
   displayName: CMake
   workingDirectory: build
 
