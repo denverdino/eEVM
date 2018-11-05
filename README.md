@@ -42,7 +42,7 @@ Open the Visual Studio 2017 developer command prompt. Create .sln and .vcxproj f
 ```cmd
 mkdir build
 cd build
-cmake -DBoost_INCLUDE_DIR=<boost directory> ..
+cmake -DBOOST_ROOT=<boost directory> ..
 msbuild ALL_BUILD.vcxproj
 ```
 

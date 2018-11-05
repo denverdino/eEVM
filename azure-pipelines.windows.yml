@@ -18,20 +18,21 @@ steps:
     $unzip_dest = Join-Path $tmp_dir $file_name_no_ext
     Expand-Archive $dest_file -DestinationPath $unzip_dest
 
-- powershell: 'ls; ls tmp; ls tmp/boost_1_67_0'
-  displayName: Debug
-
 - powershell: 'mkdir build'
   displayName: Make build dir
 
-- powershell: 'cd build; cmake -DBoost_INCLUDE_DIR=../tmp/boost_1_67_0/boost_1_67_0  ..'
+- powershell: 'cmake -DBOOST_ROOT=../tmp/boost_1_67_0  ..'
   displayName: CMake
+  workingDirectory: build
 
-- powershell: 'cd build; msbuild ALL_BUILD.vcxproj'
+- powershell: 'msbuild ALL_BUILD.vcxproj'
   displayName: MSBuild
+  workingDirectory: build
 
-- powershell: 'cd build; ctest -C debug'
+- powershell: 'ctest -C debug'
   displayName: Quick test
+  workingDirectory: build
 
-- powershell: 'cd build; time TEST_DIR=../3rdparty/test_cases/ ./evm_tests -ns -d'
+- powershell: 'time TEST_DIR=../3rdparty/test_cases/ ./evm_tests -ns -d'
   displayName: Full tests
+  workingDirectory: build
